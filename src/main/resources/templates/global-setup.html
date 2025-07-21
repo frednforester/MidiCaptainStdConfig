@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+    <!-- Navigation -->
+    <nav th:replace="fragments/header :: navbar"></nav>
+    
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">
+                            <i class="bi bi-gear"></i>
+                            Global Setup Configuration
+                        </h3>
+                        <p class="mb-0 mt-2">Configure your MidiCap device settings and generate a downloadable configuration file.</p>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/global-setup/generate}" method="post" class="needs-validation" novalidate>
+                            
+                            <!-- Basic Settings Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">
+                                        <i class="bi bi-sliders"></i>
+                                        Basic Settings
+                                    </h5>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="currentPreset" class="form-label">Current Preset</label>
+                                    <input type="number" class="form-control" id="currentPreset" name="currentPreset" 
+                                           th:value="${globalSetup.currentPreset}" min="0" max="9" required>
+                                    <div class="form-text">Do not change</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="presetName" class="form-label">Preset Name</label>
+                                    <input type="text" class="form-control" id="presetName" name="presetName" 
+                                           th:value="${globalSetup.presetName}" maxlength="5" required>
+                                    <div class="form-text">Any name with length 5 characters</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="midiChannel" class="form-label">MIDI Channel</label>
+                                    <select class="form-select" id="midiChannel" name="midiChannel" required>
+                                        <option th:each="i : ${#numbers.sequence(1, 16)}" 
+                                                th:value="${i}" th:text="${i}" 
+                                                th:selected="${i == globalSetup.midiChannel}"></option>
+                                    </select>
+                                    <div class="form-text">Match the MIDI CHANNEL between the controller and the host device</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="pcNumStart" class="form-label">PC Number Start</label>
+                                    <select class="form-select" id="pcNumStart" name="pcNumStart" required>
+                                        <option value="0" th:selected="${globalSetup.pcNumStart == 0}">0</option>
+                                        <option value="1" th:selected="${globalSetup.pcNumStart == 1}">1</option>
+                                    </select>
+                                    <div class="form-text">The program change number start from 0 or 1</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Display Settings Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">
+                                        <i class="bi bi-display"></i>
+                                        Display Settings
+                                    </h5>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="darkFonts" class="form-label">Dark Fonts</label>
+                                    <select class="form-select" id="darkFonts" name="darkFonts" required>
+                                        <option value="true" th:selected="${globalSetup.darkFonts}">ON</option>
+                                        <option value="false" th:selected="${!globalSetup.darkFonts}">OFF</option>
+                                    </select>
+                                    <div class="form-text">ON: dark color type, OFF: light color type</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="screenLight" class="form-label">Screen Light</label>
+                                    <input type="range" class="form-range" id="screenLight" name="screenLight" 
+                                           th:value="${globalSetup.screenLight}" min="1" max="100" 
+                                           oninput="this.nextElementSibling.value = this.value">
+                                    <output th:text="${globalSetup.screenLight}">80</output>
+                                    <div class="form-text">1-100 Background brightness</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="ledLight" class="form-label">LED Light</label>
+                                    <input type="range" class="form-range" id="ledLight" name="ledLight" 
+                                           th:value="${globalSetup.ledLight}" min="0" max="100" 
+                                           oninput="this.nextElementSibling.value = this.value">
+                                    <output th:text="${globalSetup.ledLight}">25</output>
+                                    <div class="form-text">0-100 (Recommend ≤ 10 to save battery)</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="wallpaper" class="form-label">Wallpaper</label>
+                                    <select class="form-select" id="wallpaper" name="wallpaper" required>
+                                        <option value="1" th:selected="${globalSetup.wallpaper == 1}">1 (when dark_font is off)</option>
+                                        <option value="2" th:selected="${globalSetup.wallpaper == 2}">2 (when dark_font is on)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="powerOnPic" class="form-label">Power On Picture</label>
+                                    <select class="form-select" id="powerOnPic" name="powerOnPic" required>
+                                        <option th:each="i : ${#numbers.sequence(1, 3)}" 
+                                                th:value="${i}" th:text="${i}" 
+                                                th:selected="${i == globalSetup.powerOnPic}"></option>
+                                    </select>
+                                    <div class="form-text">Choose the different power-on pictures</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="powerOnText" class="form-label">Power On Text</label>
+                                    <input type="text" class="form-control" id="powerOnText" name="powerOnText" 
+                                           th:value="${globalSetup.powerOnText}" maxlength="12" required>
+                                    <div class="form-text">≤ 12 characters (can only be changed in USB disk mode)</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Wireless Settings Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">
+                                        <i class="bi bi-wifi"></i>
+                                        Wireless Settings
+                                    </h5>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="wireless24G" class="form-label">Wireless 2.4G</label>
+                                    <select class="form-select" id="wireless24G" name="wireless24G" required>
+                                        <option value="true" th:selected="${globalSetup.wireless24G}">ON</option>
+                                        <option value="false" th:selected="${!globalSetup.wireless24G}">OFF</option>
+                                    </select>
+                                    <div class="form-text">Turn off to save battery when not using MIDI MATE wireless receiver</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="wirelessId" class="form-label">Wireless ID</label>
+                                    <input type="number" class="form-control" id="wirelessId" name="wirelessId" 
+                                           th:value="${globalSetup.wirelessId}" min="1" max="100" required>
+                                    <div class="form-text">1-100 (This ID should match the receiver's)</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="wirelessDb" class="form-label">Wireless Power (dB)</label>
+                                    <select class="form-select" id="wirelessDb" name="wirelessDb" required>
+                                        <option value="0" th:selected="${globalSetup.wirelessDb == 0}">0: 12dBm</option>
+                                        <option value="1" th:selected="${globalSetup.wirelessDb == 1}">1: 10dBm</option>
+                                        <option value="2" th:selected="${globalSetup.wirelessDb == 2}">2: 9dBm</option>
+                                        <option value="3" th:selected="${globalSetup.wirelessDb == 3}">3: 8dBm</option>
+                                        <option value="4" th:selected="${globalSetup.wirelessDb == 4}">4: 6dBm</option>
+                                        <option value="5" th:selected="${globalSetup.wirelessDb == 5}">5: 3dBm</option>
+                                        <option value="6" th:selected="${globalSetup.wirelessDb == 6}">6: 0dBm</option>
+                                        <option value="7" th:selected="${globalSetup.wirelessDb == 7}">7: -2dBm</option>
+                                        <option value="8" th:selected="${globalSetup.wirelessDb == 8}">8: -5dBm</option>
+                                        <option value="9" th:selected="${globalSetup.wirelessDb == 9}">9: -10dBm</option>
+                                        <option value="10" th:selected="${globalSetup.wirelessDb == 10}">10: -15dBm</option>
+                                        <option value="11" th:selected="${globalSetup.wirelessDb == 11}">11: -20dBm</option>
+                                        <option value="12" th:selected="${globalSetup.wirelessDb == 12}">12: -25dBm</option>
+                                        <option value="13" th:selected="${globalSetup.wirelessDb == 13}">13: -30dBm</option>
+                                        <option value="14" th:selected="${globalSetup.wirelessDb == 14}">14: -25dBm</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="batteryCharge" class="form-label">Battery Charge</label>
+                                    <select class="form-select" id="batteryCharge" name="batteryCharge" required>
+                                        <option value="true" th:selected="${globalSetup.batteryCharge}">ON</option>
+                                        <option value="false" th:selected="${!globalSetup.batteryCharge}">OFF</option>
+                                    </select>
+                                    <div class="form-text">Turn off when connecting to mobile Host device with less current output</div>
+                                </div>
+                            </div>
+                            
+                            <!-- MIDI Settings Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">
+                                        <i class="bi bi-music-note"></i>
+                                        MIDI Settings
+                                    </h5>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="midiThrough" class="form-label">MIDI Through</label>
+                                    <select class="form-select" id="midiThrough" name="midiThrough" required>
+                                        <option value="true" th:selected="${globalSetup.midiThrough}">ON</option>
+                                        <option value="false" th:selected="${!globalSetup.midiThrough}">OFF</option>
+                                    </select>
+                                    <div class="form-text">Turn on to forward MIDI message from MIDI IN to MIDI OUT</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="bankStep" class="form-label">Bank Step</label>
+                                    <select class="form-select" id="bankStep" name="bankStep" required>
+                                        <option value="1" th:selected="${globalSetup.bankStep == 1}">1</option>
+                                        <option value="2" th:selected="${globalSetup.bankStep == 2}">2</option>
+                                        <option value="3" th:selected="${globalSetup.bankStep == 3}">3</option>
+                                        <option value="4" th:selected="${globalSetup.bankStep == 4}">4</option>
+                                        <option value="5" th:selected="${globalSetup.bankStep == 5}">5</option>
+                                        <option value="8" th:selected="${globalSetup.bankStep == 8}">8</option>
+                                    </select>
+                                    <div class="form-text">The number of programs change over each BANK +/-</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="bankSend" class="form-label">Bank Send</label>
+                                    <select class="form-select" id="bankSend" name="bankSend" required>
+                                        <option value="true" th:selected="${globalSetup.bankSend}">ON</option>
+                                        <option value="false" th:selected="${!globalSetup.bankSend}">OFF</option>
+                                    </select>
+                                    <div class="form-text">OFF means when PC bank group change No PC send until A B C D pressed</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="exp1Cc" class="form-label">EXP1 CC#</label>
+                                    <input type="number" class="form-control" id="exp1Cc" name="exp1Cc" 
+                                           th:value="${globalSetup.exp1Cc}" min="0" max="127" required>
+                                    <div class="form-text">0-127 The CC# of EXP1 pedal channel</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="exp2Cc" class="form-label">EXP2 CC#</label>
+                                    <input type="number" class="form-control" id="exp2Cc" name="exp2Cc" 
+                                           th:value="${globalSetup.exp2Cc}" min="0" max="127" required>
+                                    <div class="form-text">0-127 The CC# of EXP2 pedal channel</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="wheelManual" class="form-label">Wheel Manual</label>
+                                    <select class="form-select" id="wheelManual" name="wheelManual" required>
+                                        <option value="true" th:selected="${globalSetup.wheelManual}">ON</option>
+                                        <option value="false" th:selected="${!globalSetup.wheelManual}">OFF</option>
+                                    </select>
+                                    <div class="form-text">Turn off to avoid miss-tuning of PC number by foot touch</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Time Engine Settings Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">
+                                        <i class="bi bi-clock"></i>
+                                        Time Engine Settings
+                                    </h5>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="timeEngine" class="form-label">Time Engine</label>
+                                    <select class="form-select" id="timeEngine" name="timeEngine" required>
+                                        <option value="true" th:selected="${globalSetup.timeEngine}">ON</option>
+                                        <option value="false" th:selected="${!globalSetup.timeEngine}">OFF</option>
+                                    </select>
+                                    <div class="form-text">Turn ON/OFF action sequence recording</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="timeTrack" class="form-label">Time Track</label>
+                                    <select class="form-select" id="timeTrack" name="timeTrack" required>
+                                        <option th:each="i : ${#numbers.sequence(1, 10)}" 
+                                                th:value="${i}" th:text="${i}" 
+                                                th:selected="${i == globalSetup.timeTrack}"></option>
+                                    </select>
+                                    <div class="form-text">1-10 Select the time recording track</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="loopRepeat" class="form-label">Loop Repeat</label>
+                                    <select class="form-select" id="loopRepeat" name="loopRepeat" required>
+                                        <option value="true" th:selected="${globalSetup.loopRepeat}">ON</option>
+                                        <option value="false" th:selected="${!globalSetup.loopRepeat}">OFF</option>
+                                    </select>
+                                    <div class="form-text">SINGLE or REPEAT when playing the recorded actions</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-download"></i>
+                                        Generate GlobalSetup.txt
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer th:replace="fragments/footer :: footer"></footer>
+    
+    <!-- Scripts -->
+    <div th:replace="fragments/footer :: scripts"></div>
+</body>
+</html> 

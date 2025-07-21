@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/header :: head"></head>
+<body>
+    <!-- Navigation -->
+    <nav th:replace="fragments/header :: navbar"></nav>
+    
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">
+                            <i class="bi bi-keyboard"></i>
+                            Key Configuration
+                        </h3>
+                        <p class="mb-0 mt-2">Configure individual key settings and generate a downloadable configuration file.</p>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/keys/generate}" method="post" class="needs-validation" novalidate>
+                            
+                            <!-- Key Information Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">
+                                        <i class="bi bi-info-circle"></i>
+                                        Key Information
+                                    </h5>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="keyId" class="form-label">Key ID</label>
+                                    <select class="form-select" id="keyId" name="keyId" required>
+                                        <option value="0" th:selected="${key0.keyId == 0}">0 - key1</option>
+                                        <option value="1" th:selected="${key0.keyId == 1}">1 - key2</option>
+                                        <option value="2" th:selected="${key0.keyId == 2}">2 - key3</option>
+                                        <option value="3" th:selected="${key0.keyId == 3}">3 - key4</option>
+                                        <option value="4" th:selected="${key0.keyId == 4}">4 - key5</option>
+                                        <option value="5" th:selected="${key0.keyId == 5}">5 - keyA</option>
+                                        <option value="6" th:selected="${key0.keyId == 6}">6 - keyB</option>
+                                        <option value="7" th:selected="${key0.keyId == 7}">7 - keyC</option>
+                                        <option value="8" th:selected="${key0.keyId == 8}">8 - keyD</option>
+                                        <option value="9" th:selected="${key0.keyId == 9}">9 - keyE</option>
+                                    </select>
+                                    <div class="form-text">Quick way to change or swap key positions</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="keyColorOverwrite" class="form-label">Key Color Overwrite</label>
+                                    <select class="form-select" id="keyColorOverwrite" name="keyColorOverwrite" required>
+                                        <option value="false" th:selected="${!key0.keyColorOverwrite}">0 - Disable</option>
+                                        <option value="true" th:selected="${key0.keyColorOverwrite}">1 - Enable</option>
+                                    </select>
+                                    <div class="form-text">Enable to use custom key color</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="keyColorUser" class="form-label">Key Color (Hex)</label>
+                                    <input type="color" class="form-control" id="keyColorUser" name="keyColorUser" 
+                                           th:value="${key0.keyColorUser}" pattern="0x[0-9A-Fa-f]{6}" required>
+                                    <div class="form-text">User-defined key color in hex format (e.g., 0x00FF00)</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Press-Down Actions Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">
+                                        <i class="bi bi-arrow-down-circle"></i>
+                                        Press-Down Actions
+                                    </h5>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="keyPressEnable" class="form-label">Press Enable</label>
+                                    <select class="form-select" id="keyPressEnable" name="keyPressEnable" required>
+                                        <option value="false" th:selected="${!key0.keyPressEnable}">0 - Disable</option>
+                                        <option value="true" th:selected="${key0.keyPressEnable}">1 - Enable</option>
+                                    </select>
+                                    <div class="form-text">Enable press-down actions</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="keyPressMode" class="form-label">Press Mode</label>
+                                    <select class="form-select" id="keyPressMode" name="keyPressMode" required>
+                                        <option value="0" th:selected="${key0.keyPressMode == 0}">0 - PC (Program Change)</option>
+                                        <option value="1" th:selected="${key0.keyPressMode == 1}">1 - CC (Control Change)</option>
+                                        <option value="2" th:selected="${key0.keyPressMode == 2}">2 - NOTE</option>
+                                        <option value="3" th:selected="${key0.keyPressMode == 3}">3 - UP</option>
+                                        <option value="4" th:selected="${key0.keyPressMode == 4}">4 - DOWN</option>
+                                    </select>
+                                    <div class="form-text">Type of MIDI message to send on press</div>
+                                </div>
+                                
+                                <!-- PC Mode Settings -->
+                                <div class="col-md-6 mb-3 pc-settings">
+                                    <label for="keyPressPcMode" class="form-label">PC Mode</label>
+                                    <select class="form-select" id="keyPressPcMode" name="keyPressPcMode" required>
+                                        <option value="0" th:selected="${key0.keyPressPcMode == 0}">0 - AUTO</option>
+                                        <option value="1" th:selected="${key0.keyPressPcMode == 1}">1 - FIXED</option>
+                                    </select>
+                                    <div class="form-text">Program Change mode</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3 pc-settings">
+                                    <label for="keyPressPcFixed" class="form-label">PC Fixed Value</label>
+                                    <input type="number" class="form-control" id="keyPressPcFixed" name="keyPressPcFixed" 
+                                           th:value="${key0.keyPressPcFixed}" min="0" max="127" required>
+                                    <div class="form-text">0-127 Fixed Program Change value</div>
+                                </div>
+                                
+                                <!-- CC Settings -->
+                                <div class="col-md-6 mb-3 cc-settings">
+                                    <label for="keyPressCcNumber" class="form-label">CC Number</label>
+                                    <input type="number" class="form-control" id="keyPressCcNumber" name="keyPressCcNumber" 
+                                           th:value="${key0.keyPressCcNumber}" min="0" max="127" required>
+                                    <div class="form-text">0-127 Control Change number</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3 cc-settings">
+                                    <label for="keyPressCcValue" class="form-label">CC Value</label>
+                                    <input type="number" class="form-control" id="keyPressCcValue" name="keyPressCcValue" 
+                                           th:value="${key0.keyPressCcValue}" min="0" max="127" required>
+                                    <div class="form-text">0-127 Control Change value</div>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3 cc-settings">
+                                    <label for="keyPressCcScene" class="form-label">CC Scene</label>
+                                    <select class="form-select" id="keyPressCcScene" name="keyPressCcScene" required>
+                                        <option value="false" th:selected="${!key0.keyPressCcScene}">0 - OFF</option>
+                                        <option value="true" th:selected="${key0.keyPressCcScene}">1 - ON</option>
+                                    </select>
+                                    <div class="form-text">Control the LED work as scene control</div>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3 cc-settings">
+                                    <label for="keyPressCcTap" class="form-label">CC Tap</label>
+                                    <select class="form-select" id="keyPressCcTap" name="keyPressCcTap" required>
+                                        <option value="false" th:selected="${!key0.keyPressCcTap}">0 - OFF</option>
+                                        <option value="true" th:selected="${key0.keyPressCcTap}">1 - ON</option>
+                                    </select>
+                                    <div class="form-text">Enable when the key is for TAP using</div>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3 cc-settings">
+                                    <label for="keyPressCcToggle" class="form-label">CC Toggle</label>
+                                    <select class="form-select" id="keyPressCcToggle" name="keyPressCcToggle" required>
+                                        <option value="false" th:selected="${!key0.keyPressCcToggle}">0 - OFF</option>
+                                        <option value="true" th:selected="${key0.keyPressCcToggle}">1 - ON</option>
+                                    </select>
+                                    <div class="form-text">Auto toggle between SubNum and 0</div>
+                                </div>
+                                
+                                <!-- Note Settings -->
+                                <div class="col-md-6 mb-3 note-settings">
+                                    <label for="keyPressNoteNumber" class="form-label">Note Number</label>
+                                    <input type="number" class="form-control" id="keyPressNoteNumber" name="keyPressNoteNumber" 
+                                           th:value="${key0.keyPressNoteNumber}" min="0" max="127" required>
+                                    <div class="form-text">0-127 MIDI note number (see note table below)</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3 note-settings">
+                                    <label for="keyPressNoteStrike" class="form-label">Note Strike (Velocity)</label>
+                                    <input type="number" class="form-control" id="keyPressNoteStrike" name="keyPressNoteStrike" 
+                                           th:value="${key0.keyPressNoteStrike}" min="0" max="127" required>
+                                    <div class="form-text">0-127 Note loudness/velocity</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Release Actions Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">
+                                        <i class="bi bi-arrow-up-circle"></i>
+                                        Release Actions
+                                    </h5>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="keyReleaseEnable" class="form-label">Release Enable</label>
+                                    <select class="form-select" id="keyReleaseEnable" name="keyReleaseEnable" required>
+                                        <option value="false" th:selected="${!key0.keyReleaseEnable}">0 - Disable</option>
+                                        <option value="true" th:selected="${key0.keyReleaseEnable}">1 - Enable</option>
+                                    </select>
+                                    <div class="form-text">Enable release actions (required for "moment" function)</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="keyReleaseMode" class="form-label">Release Mode</label>
+                                    <select class="form-select" id="keyReleaseMode" name="keyReleaseMode" required>
+                                        <option value="0" th:selected="${key0.keyReleaseMode == 0}">0 - PC (Program Change)</option>
+                                        <option value="1" th:selected="${key0.keyReleaseMode == 1}">1 - CC (Control Change)</option>
+                                        <option value="2" th:selected="${key0.keyReleaseMode == 2}">2 - NOTE</option>
+                                        <option value="3" th:selected="${key0.keyReleaseMode == 3}">3 - UP</option>
+                                        <option value="4" th:selected="${key0.keyReleaseMode == 4}">4 - DOWN</option>
+                                    </select>
+                                    <div class="form-text">Type of MIDI message to send on release</div>
+                                </div>
+                                
+                                <!-- Release PC Mode Settings -->
+                                <div class="col-md-6 mb-3 release-pc-settings">
+                                    <label for="keyReleasePcMode" class="form-label">Release PC Mode</label>
+                                    <select class="form-select" id="keyReleasePcMode" name="keyReleasePcMode" required>
+                                        <option value="0" th:selected="${key0.keyReleasePcMode == 0}">0 - AUTO</option>
+                                        <option value="1" th:selected="${key0.keyReleasePcMode == 1}">1 - FIXED</option>
+                                    </select>
+                                    <div class="form-text">Release Program Change mode</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3 release-pc-settings">
+                                    <label for="keyReleasePcFixed" class="form-label">Release PC Fixed Value</label>
+                                    <input type="number" class="form-control" id="keyReleasePcFixed" name="keyReleasePcFixed" 
+                                           th:value="${key0.keyReleasePcFixed}" min="0" max="127" required>
+                                    <div class="form-text">0-127 Fixed Program Change value on release</div>
+                                </div>
+                                
+                                <!-- Release CC Settings -->
+                                <div class="col-md-6 mb-3 release-cc-settings">
+                                    <label for="keyReleaseCcNumber" class="form-label">Release CC Number</label>
+                                    <input type="number" class="form-control" id="keyReleaseCcNumber" name="keyReleaseCcNumber" 
+                                           th:value="${key0.keyReleaseCcNumber}" min="0" max="127" required>
+                                    <div class="form-text">0-127 Control Change number on release</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3 release-cc-settings">
+                                    <label for="keyReleaseCcValue" class="form-label">Release CC Value</label>
+                                    <input type="number" class="form-control" id="keyReleaseCcValue" name="keyReleaseCcValue" 
+                                           th:value="${key0.keyReleaseCcValue}" min="0" max="127" required>
+                                    <div class="form-text">0-127 Control Change value on release</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3 release-cc-settings">
+                                    <label for="keyReleaseCcToggle" class="form-label">Release CC Toggle</label>
+                                    <select class="form-select" id="keyReleaseCcToggle" name="keyReleaseCcToggle" required>
+                                        <option value="false" th:selected="${!key0.keyReleaseCcToggle}">0 - OFF</option>
+                                        <option value="true" th:selected="${key0.keyReleaseCcToggle}">1 - ON</option>
+                                    </select>
+                                    <div class="form-text">Auto toggle between SubNum and 0 on release</div>
+                                </div>
+                                
+                                <!-- Release Note Settings -->
+                                <div class="col-md-6 mb-3 release-note-settings">
+                                    <label for="keyReleaseNoteNumber" class="form-label">Release Note Number</label>
+                                    <input type="number" class="form-control" id="keyReleaseNoteNumber" name="keyReleaseNoteNumber" 
+                                           th:value="${key0.keyReleaseNoteNumber}" min="0" max="127" required>
+                                    <div class="form-text">0-127 MIDI note number on release</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3 release-note-settings">
+                                    <label for="keyReleaseNoteStrike" class="form-label">Release Note Strike</label>
+                                    <input type="number" class="form-control" id="keyReleaseNoteStrike" name="keyReleaseNoteStrike" 
+                                           th:value="${key0.keyReleaseNoteStrike}" min="0" max="127" required>
+                                    <div class="form-text">0-127 Note loudness/velocity on release</div>
+                                </div>
+                            </div>
+                            
+                            <!-- MIDI Note Table Section -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">
+                                        <i class="bi bi-music-note"></i>
+                                        MIDI Note Reference Table
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Octave</th>
+                                                    <th>C</th>
+                                                    <th>C#</th>
+                                                    <th>D</th>
+                                                    <th>D#</th>
+                                                    <th>E</th>
+                                                    <th>F</th>
+                                                    <th>F#</th>
+                                                    <th>G</th>
+                                                    <th>G#</th>
+                                                    <th>A</th>
+                                                    <th>A#</th>
+                                                    <th>B</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr><td>0</td><td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>11</td></tr>
+                                                <tr><td>1</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
+                                                <tr><td>2</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td><td>32</td><td>33</td><td>34</td><td>35</td></tr>
+                                                <tr><td>3</td><td>36</td><td>37</td><td>38</td><td>39</td><td>40</td><td>41</td><td>42</td><td>43</td><td>44</td><td>45</td><td>46</td><td>47</td></tr>
+                                                <tr><td>4</td><td>48</td><td>49</td><td>50</td><td>51</td><td>52</td><td>53</td><td>54</td><td>55</td><td>56</td><td>57</td><td>58</td><td>59</td></tr>
+                                                <tr><td>5</td><td>60</td><td>61</td><td>62</td><td>63</td><td>64</td><td>65</td><td>66</td><td>67</td><td>68</td><td>69</td><td>70</td><td>71</td></tr>
+                                                <tr><td>6</td><td>72</td><td>73</td><td>74</td><td>75</td><td>76</td><td>77</td><td>78</td><td>79</td><td>80</td><td>81</td><td>82</td><td>83</td></tr>
+                                                <tr><td>7</td><td>84</td><td>85</td><td>86</td><td>87</td><td>88</td><td>89</td><td>90</td><td>91</td><td>92</td><td>93</td><td>94</td><td>95</td></tr>
+                                                <tr><td>8</td><td>96</td><td>97</td><td>98</td><td>99</td><td>100</td><td>101</td><td>102</td><td>103</td><td>104</td><td>105</td><td>106</td><td>107</td></tr>
+                                                <tr><td>9</td><td>108</td><td>109</td><td>110</td><td>111</td><td>112</td><td>113</td><td>114</td><td>115</td><td>116</td><td>117</td><td>118</td><td>119</td></tr>
+                                                <tr><td>10</td><td>120</td><td>121</td><td>122</td><td>123</td><td>124</td><td>125</td><td>126</td><td>127</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button -->
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-download"></i>
+                                        Generate key0.txt
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer th:replace="fragments/footer :: footer"></footer>
+    
+    <!-- Scripts -->
+    <div th:replace="fragments/footer :: scripts"></div>
+    
+    <!-- Custom JavaScript for dynamic form behavior -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pressMode = document.getElementById('keyPressMode');
+            const releaseMode = document.getElementById('keyReleaseMode');
+            
+            function toggleSettings(modeSelect, pcClass, ccClass, noteClass) {
+                const mode = parseInt(modeSelect.value);
+                const pcSettings = document.querySelectorAll('.' + pcClass);
+                const ccSettings = document.querySelectorAll('.' + ccClass);
+                const noteSettings = document.querySelectorAll('.' + noteClass);
+                
+                // Hide all settings first
+                pcSettings.forEach(el => el.style.display = 'none');
+                ccSettings.forEach(el => el.style.display = 'none');
+                noteSettings.forEach(el => el.style.display = 'none');
+                
+                // Show relevant settings based on mode
+                if (mode === 0) { // PC
+                    pcSettings.forEach(el => el.style.display = 'block');
+                } else if (mode === 1) { // CC
+                    ccSettings.forEach(el => el.style.display = 'block');
+                } else if (mode === 2) { // NOTE
+                    noteSettings.forEach(el => el.style.display = 'block');
+                }
+            }
+            
+            // Initial setup
+            toggleSettings(pressMode, 'pc-settings', 'cc-settings', 'note-settings');
+            toggleSettings(releaseMode, 'release-pc-settings', 'release-cc-settings', 'release-note-settings');
+            
+            // Add event listeners
+            pressMode.addEventListener('change', function() {
+                toggleSettings(this, 'pc-settings', 'cc-settings', 'note-settings');
+            });
+            
+            releaseMode.addEventListener('change', function() {
+                toggleSettings(this, 'release-pc-settings', 'release-cc-settings', 'release-note-settings');
+            });
+        });
+    </script>
+</body>
+</html> 

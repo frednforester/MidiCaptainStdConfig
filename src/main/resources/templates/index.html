@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
+<body>
+    <!-- Navigation -->
+    <nav th:replace="fragments/header :: navbar"></nav>
+    
+    <!-- Main Content -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-5">
+                    <h1 class="display-4 text-primary">
+                        <i class="bi bi-music-note-beamed"></i>
+                        Welcome to MidiCap
+                    </h1>
+                    <p class="lead">Configuration tool for your MIDI device settings</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="bi bi-gear display-4 text-primary mb-3"></i>
+                                <h5 class="card-title">Global Setup</h5>
+                                <p class="card-text">Configure device-wide settings like MIDI channels, display options, wireless settings, and more.</p>
+                                <a href="/global-setup" class="btn btn-primary">
+                                    <i class="bi bi-arrow-right"></i>
+                                    Configure
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body text-center">
+                                <i class="bi bi-keyboard display-4 text-primary mb-3"></i>
+                                <h5 class="card-title">Key Configuration</h5>
+                                <p class="card-text">Set up individual key mappings, MIDI messages, and behavior for each button on your device.</p>
+                                <a href="/keys" class="btn btn-primary">
+                                    <i class="bi bi-arrow-right"></i>
+                                    Configure
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info">
+                            <h6><i class="bi bi-info-circle"></i> How to use:</h6>
+                            <ol class="mb-0">
+                                <li>Configure your settings using the forms above</li>
+                                <li>Generate the configuration file</li>
+                                <li>Download and transfer the file to your MIDI device</li>
+                                <li>Restart your device to apply the new settings</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer th:replace="fragments/footer :: footer"></footer>
+    
+    <!-- Scripts -->
+    <div th:replace="fragments/footer :: scripts"></div>
+</body>
+</html> 
