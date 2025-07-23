@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.midicap</groupId>
-	<artifactId>MidiCap</artifactId>
+	<artifactId>MidiCapStandard</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>MidiCap</name>
+	<name>MidiCapStandard</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
